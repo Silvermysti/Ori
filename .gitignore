@@ -1,0 +1,30 @@
+# Dependencies (installed via npm, never committed — restored with `npm install`)
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Capacitor / Android native build artifacts (added in later phases)
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+android/app/release/
+*.apk
+*.aab
+*.keystore
+
+# Logs & caches
+*.log
+npm-debug.log*
+.vite/
+
+# Editor / OS noise
+.DS_Store
+.idea/
+*.swp
+
+# Local screenshots used for verification
+shot*.png
+/tmp/
