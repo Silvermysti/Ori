@@ -8,54 +8,56 @@ Ori is a single-page prototype of a pixel-art iOS task + scheduler app whose cor
 **urgency = temperature**: every task has a "heat" 0–4 (CHILL / EASY / SOON / URGENT / NOW!)
 that maps to a warm-earthy color. It is a design/prototype artifact, not a production app.
 
-## No build step — in-browser Babel
+## Build — Vite (as of Phase 1 of the Android conversion)
 
-There is **no bundler, no npm, no package.json**. `Ori.html` loads React 18.3.1 (UMD) and
-`@babel/standalone` from a CDN, then loads every `.jsx` file with
-`<script type="text/babel" src="...">`. Babel transpiles them in the browser at page load.
+This project is being converted into an installable Android app (Vite build → Capacitor
+package → Android Studio). **Phase 1 is done:** the old in-browser Babel setup (`Ori.html` +
+`@babel/standalone` from a CDN) has been replaced by a real **Vite** build. `Ori.html` is now
+legacy and superseded; the live entry point is `index.html` + `main.jsx`.
 
-Consequences that matter:
+```bash
+npm install        # once, to get dependencies into node_modules/
+npm run dev        # dev server with hot reload (prints a localhost URL)
+npm run build      # production bundle into dist/
+npm run preview    # serve the built dist/ to verify a production build
+```
 
-- **Must be served over HTTP**, not opened as `file://` (the browser blocks loading the
-  `text/babel` scripts otherwise). Run it with:
-  ```bash
-  python3 -m http.server 7821      # then open http://localhost:7821/Ori.html
-  ```
-- **No `import`/`export`.** Every file ends with `Object.assign(window, { ... })` to publish
-  its components/helpers, and other files read them off `window` (e.g. `window.computeHeat`,
-  `window.TaskRow`). When you add a component, export it the same way.
-- **Load order is a hand-maintained dependency order** in `Ori.html` (lines ~32–43):
-  frames → pixel-icons → model → ui → screens → app. A file must be listed *after* anything
-  it depends on at module-eval time.
-- **One syntax error blanks the whole app.** Babel compiles all `text/babel` scripts together,
-  so a single bad file takes everything down to a white screen. When debugging a blank screen,
-  suspect (a) a syntax error in *any* `.jsx`, or (b) a stale browser cache (hard-refresh with
-  Ctrl+Shift+R after edits — the dev CDN files and `.jsx` are aggressively cached).
+Things that still matter:
+
+- **The `window` registry pattern is KEPT.** Every file still ends with
+  `Object.assign(window, { ... })` to publish its components/helpers, and other files read
+  them off `window` (e.g. `window.computeHeat`, `window.TaskRow`). When you add a component,
+  export it the same way. We did *not* convert these to ES `import`/`export` — only what
+  broke under modules was fixed.
+- **What Phase 1 changed in each file:** every `.jsx` that uses JSX now starts with
+  `import React from "react";` (and `app.jsx` also imports `react-dom/client`). The single
+  cross-file *bare* reference, `PixelIcon`, became `window.PixelIcon` in its 7 consumers so
+  module scope resolves it via the registry. `data/model.jsx` has no React import (pure logic).
+- **Load order lives in `main.jsx`**, not in HTML script tags. It imports the CSS first, then
+  every `.jsx` in dependency order: frames → pixel-icons → model → ui → screens → app. A file
+  must be imported *after* anything it depends on at module-eval time. `app.jsx` mounts the
+  React app at the bottom, so it is imported last.
+- **`vite.config.js` sets `base: "./"`** (relative asset paths). This is required so the
+  built `dist/` works inside Capacitor's `file://` WebView later. Don't change it to an
+  absolute base.
 
 ## Verifying changes
 
 Two checks are used in this repo instead of a test suite:
 
-1. **Compile-check a file** with standalone Babel (catches the syntax errors that would blank
-   the app) — fetch `babel.min.js` once, then:
+1. **Build it** — Vite will fail loudly on a syntax/import error that the old Babel setup
+   would have hidden behind a blank screen:
    ```bash
-   node -e 'const b=require("./babel.min.js"); const fs=require("fs");
-     b.transform(fs.readFileSync("screens/today.jsx","utf8"),{presets:["react"]}); console.log("ok")'
+   npm run build
    ```
-2. **Headless screenshot** to confirm it actually renders (use a long virtual-time budget so
-   the CDN + Babel pass finishes before capture):
+2. **Headless screenshot** to confirm it actually renders. Start the preview server, then
+   capture it (a long virtual-time budget gives the bundle time to render before capture):
    ```bash
+   npm run preview        # serves dist/ at http://localhost:4173/
    google-chrome --headless --disable-gpu --no-sandbox --window-size=1400,900 \
-     --screenshot=/tmp/shot.png --virtual-time-budget=18000 http://localhost:7821/Ori.html
+     --screenshot=/tmp/shot.png --virtual-time-budget=18000 http://localhost:4173/
    ```
    Then Read `/tmp/shot.png`.
-
-## CDN scripts use SRI integrity hashes
-
-The three CDN `<script>` tags in `Ori.html` carry `integrity="sha384-..."` hashes. If you ever
-bump a library version or URL, the hash must be regenerated or the script silently fails to load
-(`openssl dgst -sha384 -binary file.js | openssl base64 -A`). Don't change the version without
-updating the hash.
 
 ## Architecture
 
