@@ -3,6 +3,36 @@ import * as ReactDOM from "react-dom/client";
 // app.jsx — Ori shell: navigation, state, tweaks
 const { useState: useApp, useEffect: useAppEffect } = React;
 
+const STORE_KEY = "ori.tasks";
+
+// JSON can't hold Date objects, so deadline/planDate come back as text strings.
+// Turn them back into Dates or computeHeat's t.deadline.getTime() would throw.
+function reviveDates(t) {
+  return { ...t,
+    deadline: t.deadline ? new Date(t.deadline) : t.deadline,
+    planDate: t.planDate ? new Date(t.planDate) : t.planDate };
+}
+function loadTasks() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (!raw) return window.SEED;                 // first run → seed demo
+    return JSON.parse(raw).map(reviveDates);
+  } catch { return window.SEED; }
+}
+
+// Re-read the device clock every minute (and the instant the app returns to the
+// foreground) so heat and countdowns stay live, then force a re-render.
+function useNow() {
+  const [, force] = useApp(0);
+  useAppEffect(() => {
+    const tick = () => { window.refreshNow(); force((n) => n + 1); };
+    const id = setInterval(tick, 60000);
+    const onShow = () => document.visibilityState === "visible" && tick();
+    document.addEventListener("visibilitychange", onShow);
+    return () => { clearInterval(id); document.removeEventListener("visibilitychange", onShow); };
+  }, []);
+}
+
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "dark": false,
   "density": "regular",
@@ -27,10 +57,15 @@ function Stage({ children }) {
 
 function App() {
   const [t, setTweak] = window.useTweaks(TWEAK_DEFAULTS);
-  const [tasks, setTasks] = useApp(window.SEED);
+  const [tasks, setTasks] = useApp(loadTasks);
   const [tab, setTab] = useApp("today");
   const [detailId, setDetailId] = useApp(null);
   const [addOpen, setAddOpen] = useApp(false);
+
+  useNow();                                        // keep the clock live
+  useAppEffect(() => {                             // persist tasks on every change
+    localStorage.setItem(STORE_KEY, JSON.stringify(tasks));
+  }, [tasks]);
 
   const toggle = (id) => setTasks((ts) => ts.map((x) => x.id === id ? { ...x, done: !x.done } : x));
   const save = (u) => setTasks((ts) => ts.map((x) => x.id === u.id ? u : x));

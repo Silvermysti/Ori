@@ -1,8 +1,9 @@
 // model.jsx — mock data, heat logic, date + duration helpers
-// Fixed "now" so countdowns are deterministic: Fri 5 Jun 2026, 2:23pm
-const NOW = new Date(2026, 5, 5, 14, 23);
-const NOW_MIN = NOW.getHours() * 60 + NOW.getMinutes();
-const TODAY = new Date(2026, 5, 5);
+// Live "now", read from the device clock. refreshNow() re-reads it on a timer
+// (see useNow in app.jsx) so countdowns and heat stay current.
+let NOW = new Date();
+let NOW_MIN = NOW.getHours() * 60 + NOW.getMinutes();
+let TODAY = new Date(NOW.getFullYear(), NOW.getMonth(), NOW.getDate());
 const DAY_MS = 86400000;
 const DAILY_CAP = 240;        // default minutes of focus per day
 
@@ -13,6 +14,16 @@ const sameDay = (a, b) => a && b && a.getFullYear() === b.getFullYear()
 const addDays = (d, n) => { const nd = new Date(d); nd.setDate(nd.getDate() + n); return startOfDay(nd); };
 const daysBetween = (a, b) => Math.round((startOfDay(b) - startOfDay(a)) / DAY_MS);
 function dayKey(d) { return d ? `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}` : "anytime"; }
+
+// Re-read the device clock. The logic functions below close over NOW/NOW_MIN/TODAY
+// by name, so reassigning here makes them recompute against the new time. The last
+// line refreshes the copies published on window.* that the screens read.
+function refreshNow() {
+  NOW = new Date();
+  NOW_MIN = NOW.getHours() * 60 + NOW.getMinutes();
+  TODAY = startOfDay(NOW);
+  Object.assign(window, { NOW, NOW_MIN, TODAY });
+}
 
 // 6×7 grid for a month, Monday-first; cells outside the month are flagged
 function monthGrid(year, month /* 0-indexed */) {
@@ -128,8 +139,10 @@ function dayLoadMins(tasks, date) {
   return mins;
 }
 
-const d = (mo, day, h, m) => new Date(2026, mo, day, h, m || 0);
-const pd = (mo, day) => new Date(2026, mo, day);
+// SEED dates are relative to TODAY (off = days from today) so the first-run demo
+// always looks current. rel() carries a time of day; relDay() is that day at midnight.
+const rel = (off, h, m) => { const nd = addDays(NOW, off); nd.setHours(h, m || 0, 0, 0); return nd; };
+const relDay = (off) => addDays(NOW, off);
 
 let _id = 0; const uid = () => "t" + (++_id);
 const SEED = [
@@ -140,21 +153,21 @@ const SEED = [
   { id: uid(), title: "Walk the dog", type: "daily", cat: "home",  by: 1200, dur: 30, done: false },
   { id: uid(), title: "Stretch · 10 min", type: "daily", cat: "health", dur: 10, done: false },
   { id: uid(), title: "Read 20 pages", type: "daily", cat: "learn", dur: 25, done: false },
-  // one-time
-  { id: uid(), title: "Send invoice #204", type: "once", cat: "money", deadline: d(5, 5, 17, 0), dur: 30, planDate: pd(5, 5), done: false, notes: "Attach the May timesheet + the revised rate card before sending to Atlas." },
-  { id: uid(), title: "Submit tax documents", type: "once", cat: "money", deadline: d(5, 4, 23, 59), allDay: true, dur: 60, planDate: pd(5, 5), done: false, notes: "Upload the signed forms to the portal." },
-  { id: uid(), title: "Design review prep", type: "once", cat: "work",  deadline: d(5, 6, 10, 0), dur: 60, planDate: pd(5, 5), done: false, notes: "Export the 3 flows + write the 5-line summary." },
-  { id: uid(), title: "Confirm dentist appt", type: "once", cat: "health", deadline: d(5, 8, 12, 0), dur: 10, planDate: pd(5, 6), done: false },
-  { id: uid(), title: "Book flights for July", type: "once", cat: "errand", deadline: d(5, 11, 23, 59), allDay: true, dur: 30, planDate: pd(5, 10), done: false },
-  { id: uid(), title: "Birthday gift · Mara", type: "once", cat: "errand", deadline: d(5, 14, 23, 59), allDay: true, dur: 45, planDate: pd(5, 13), done: false },
-  { id: uid(), title: "Renew passport", type: "once", cat: "home", deadline: d(6, 2, 23, 59), allDay: true, dur: null, planDate: null, done: false },
+  // one-time (offsets in days from today; mirrors the original demo spread)
+  { id: uid(), title: "Send invoice #204", type: "once", cat: "money", deadline: rel(0, 17, 0), dur: 30, planDate: relDay(0), done: false, notes: "Attach the May timesheet + the revised rate card before sending to Atlas." },
+  { id: uid(), title: "Submit tax documents", type: "once", cat: "money", deadline: rel(-1, 23, 59), allDay: true, dur: 60, planDate: relDay(0), done: false, notes: "Upload the signed forms to the portal." },
+  { id: uid(), title: "Design review prep", type: "once", cat: "work",  deadline: rel(1, 10, 0), dur: 60, planDate: relDay(0), done: false, notes: "Export the 3 flows + write the 5-line summary." },
+  { id: uid(), title: "Confirm dentist appt", type: "once", cat: "health", deadline: rel(3, 12, 0), dur: 10, planDate: relDay(1), done: false },
+  { id: uid(), title: "Book flights for July", type: "once", cat: "errand", deadline: rel(6, 23, 59), allDay: true, dur: 30, planDate: relDay(5), done: false },
+  { id: uid(), title: "Birthday gift · Mara", type: "once", cat: "errand", deadline: rel(9, 23, 59), allDay: true, dur: 45, planDate: relDay(8), done: false },
+  { id: uid(), title: "Renew passport", type: "once", cat: "home", deadline: rel(27, 23, 59), allDay: true, dur: null, planDate: null, done: false },
   { id: uid(), title: "Brainstorm side project", type: "once", cat: "learn", dur: null, planDate: null, done: false },
-  { id: uid(), title: "Coffee with Sam", type: "once", cat: "home", deadline: d(5, 12, 14, 0), dur: 60, planDate: pd(5, 12), done: false },
-  { id: uid(), title: "Annual review notes", type: "once", cat: "work", deadline: d(5, 19, 17, 0), allDay: true, dur: 90, planDate: pd(5, 18), done: false },
+  { id: uid(), title: "Coffee with Sam", type: "once", cat: "home", deadline: rel(7, 14, 0), dur: 60, planDate: relDay(7), done: false },
+  { id: uid(), title: "Annual review notes", type: "once", cat: "work", deadline: rel(14, 17, 0), allDay: true, dur: 90, planDate: relDay(13), done: false },
 ];
 
 Object.assign(window, {
-  NOW, NOW_MIN, TODAY, DAILY_CAP, CATS, HEAT_NAMES,
+  NOW, NOW_MIN, TODAY, refreshNow, DAILY_CAP, CATS, HEAT_NAMES,
   startOfDay, sameDay, addDays, daysBetween, dayKey, monthGrid,
   fmtTime, fmtDur, planLabel, computeHeat, countdown, dueBucket, dayLoadMins, SEED, uid,
 });

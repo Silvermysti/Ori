@@ -70,8 +70,8 @@ function TodayScreen({ tasks, onToggle, onOpen, layout = "heat" }) {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 14 }}>
         <div>
           <div className="eyebrow" style={{ marginBottom: 2 }}>{greet}</div>
-          <div className="px" style={{ fontSize: 30, lineHeight: .9, color: "var(--ink)" }}>Friday</div>
-          <div style={{ fontSize: 13, color: "var(--ink-3)", marginTop: 4 }}>June 5 · {leftCount} left · {fmtH(planMins)}</div>
+          <div className="px" style={{ fontSize: 30, lineHeight: .9, color: "var(--ink)" }}>{window.TODAY.toLocaleDateString("en-US", { weekday: "long" })}</div>
+          <div style={{ fontSize: 13, color: "var(--ink-3)", marginTop: 4 }}>{window.TODAY.toLocaleDateString("en-US", { month: "long", day: "numeric" })} · {leftCount} left · {fmtH(planMins)}</div>
         </div>
         {onFire > 0 &&
         <div style={{ textAlign: "right" }}>
