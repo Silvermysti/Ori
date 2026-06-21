@@ -62,11 +62,13 @@ Two checks are used in this repo instead of a test suite:
 ## Architecture
 
 - **`data/model.jsx`** — the brain. Holds the mock `SEED` data and *all* domain logic:
-  `computeHeat`, `countdown`, `dueBucket`, `dayLoadMins`, plus date/format helpers. Crucially it
-  pins a **fixed deterministic "now"**: `NOW = Fri 5 Jun 2026, 2:23pm` (`TODAY` is that date).
-  Countdowns and heat are computed against this constant, so the UI is reproducible and most
-  screens are hardcoded to "Friday / June 5". If you change time-dependent behavior, change it
-  here.
+  `computeHeat`, `countdown`, `dueBucket`, `dayLoadMins`, plus date/format helpers. **`NOW`,
+  `NOW_MIN`, and `TODAY` are read from the real device clock** (Phase 2). They're `let`, and
+  `refreshNow()` re-reads them; the logic functions close over those names so they recompute
+  against current time with no other changes. `app.jsx`'s `useNow()` hook calls `refreshNow()`
+  every minute (and on app foreground) and forces a re-render. `SEED` dates are built **relative
+  to today** via `rel(off, h, m)` / `relDay(off)` (day-offset builders) so the first-run demo
+  always looks current. If you change time-dependent behavior, change it here.
 - **Two task types** drive everything:
   - `daily` — recurs every day, resets at midnight; heat rises through the day from `NOW_MIN`
     (and jumps to 4 if a target time `by` is passed).
@@ -74,7 +76,10 @@ Two checks are used in this repo instead of a test suite:
     (scheduled day) or none ("Anytime").
 - **`app.jsx`** — the shell: holds `tasks` state and all mutations (toggle/save/del/add/movePlan),
   switches between the four screens by `tab`, and renders the detail push + add sheet. Wraps
-  everything in `IOSDevice` (bezel) and a `.ori-root` themed container.
+  everything in `IOSDevice` (bezel) and a `.ori-root` themed container. Persists `tasks` to
+  `localStorage` (key `ori.tasks`) on every change and loads them on start (with `reviveDates`
+  turning stored date strings back into `Date`s; falls back to `SEED` on first run). Runs
+  `useNow()` to keep the clock live.
 - **`components/ui.jsx`** — shared widgets (`TaskRow`, `Check`, `HeatTag`, `Countdown`,
   `TabBar`, `TopChrome`, `Sheet`, etc.).
 - **`components/pixel-icons.jsx`** — icons are ASCII grids of `#`/`.` cells rendered as squares
