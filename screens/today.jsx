@@ -1,3 +1,4 @@
+import React from "react";
 // today.jsx — home screen (list-first, grouped by heat)
 function TodayScreen({ tasks, onToggle, onOpen, layout = "heat" }) {
   const [grouping, setGrouping] = React.useState(layout);
@@ -144,7 +145,7 @@ function TodayScreen({ tasks, onToggle, onOpen, layout = "heat" }) {
                 <option value="type">By type</option>
                 <option value="flat">All tasks</option>
               </select>
-              <PixelIcon name="chevD" size={8} color="var(--ink-3)"
+              <window.PixelIcon name="chevD" size={8} color="var(--ink-3)"
             style={{ position: "absolute", right: 6, top: "50%",
               transform: "translateY(-50%)", pointerEvents: "none" }} />
             </div>;

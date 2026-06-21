@@ -1,3 +1,4 @@
+import React from "react";
 // you.jsx — lightweight profile / stats screen
 function YouScreen({ tasks }) {
   const doneToday = tasks.filter(t => t.done).length;
@@ -26,7 +27,7 @@ function YouScreen({ tasks }) {
       </div>
 
       <div style={{ display: "flex", gap: 10, marginBottom: 18 }}>
-        {stat(<span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><PixelIcon name="heart" size={16} color="var(--heat-3)" />12</span>, "day streak", "var(--heat-3)")}
+        {stat(<span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><window.PixelIcon name="heart" size={16} color="var(--heat-3)" />12</span>, "day streak", "var(--heat-3)")}
         {stat(doneToday, "done today")}
         {stat(pct + "%", "of plan", "var(--heat-0)")}
       </div>
@@ -39,7 +40,7 @@ function YouScreen({ tasks }) {
           ["bolt", "Balanced by time", "No fixed slots — Ori spreads tasks across days by estimated duration."],
         ].map(([ic, h, b]) => (
           <div key={h} style={{ display: "flex", gap: 11, alignItems: "flex-start" }}>
-            <div className="px-inset" style={{ padding: 8, flexShrink: 0 }}><PixelIcon name={ic} size={16} color="var(--accent)" /></div>
+            <div className="px-inset" style={{ padding: 8, flexShrink: 0 }}><window.PixelIcon name={ic} size={16} color="var(--accent)" /></div>
             <div>
               <div style={{ fontWeight: 700, fontSize: 14.5 }}>{h}</div>
               <div style={{ fontSize: 12.5, color: "var(--ink-2)", lineHeight: 1.4 }}>{b}</div>

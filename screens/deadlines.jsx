@@ -1,3 +1,4 @@
+import React from "react";
 // deadlines.jsx — upcoming one-time deadlines, grouped by bucket
 const BUCKET_ORDER = ["Overdue", "Today", "Tomorrow", "This week", "This month", "Later", "Someday"];
 
@@ -49,7 +50,7 @@ function DeadlinesScreen({ tasks, onToggle, onOpen }) {
           borderLeft: `6px solid var(--heat-${window.computeHeat(next)})` }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
             <span className="eyebrow" style={{ display: "inline-flex", gap: 6, alignItems: "center" }}>
-              <PixelIcon name="target" size={11} color="var(--accent)" /> next deadline</span>
+              <window.PixelIcon name="target" size={11} color="var(--accent)" /> next deadline</span>
             <window.HeatTag k={window.computeHeat(next)} />
           </div>
           <div style={{ fontSize: 22, fontWeight: 800 }}>{next.title}</div>

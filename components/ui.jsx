@@ -1,3 +1,4 @@
+import React from "react";
 // ui.jsx — shared Ori components (exported to window)
 const { useState: useStateUI, useEffect: useEffectUI, useRef: useRefUI } = React;
 
@@ -15,7 +16,7 @@ function Meter({ level, max = 5, h = 13 }) {
 function HeatTag({ k, ember }) {
   return (
     <span className="heat-tag" style={{ background: `var(--heat-${k}-bg)`, color: `var(--heat-${k})` }}>
-      <PixelIcon name="flame" size={11} color={`var(--heat-${k})`} className={k === 4 ? "is-ember" : ""} />
+      <window.PixelIcon name="flame" size={11} color={`var(--heat-${k})`} className={k === 4 ? "is-ember" : ""} />
       {window.HEAT_NAMES[k]}
     </span>);
 
@@ -44,11 +45,11 @@ function Check({ done, onToggle, size = 26 }) {
     <div style={{ position: "relative", width: size, height: size, flexShrink: 0 }}>
       <div className={"px-check" + (burst ? " check-pop" : "")} data-on={done} onClick={click}
       style={{ width: size, height: size }}>
-        <PixelIcon name="check" size={size * 0.6} color="var(--on-accent)" />
+        <window.PixelIcon name="check" size={size * 0.6} color="var(--on-accent)" />
       </div>
       {burst &&
       <span className="spark-burst">
-          <PixelIcon name="spark" size={size * 1.6} color="var(--heat-2)" />
+          <window.PixelIcon name="spark" size={size * 1.6} color="var(--heat-2)" />
         </span>
       }
     </div>);
@@ -82,7 +83,7 @@ function TaskRow({ task, onToggle, onOpen, compact }) {
           textDecoration: task.done ? "line-through" : "none", color: task.done ? "var(--ink-3)" : "var(--ink)",
           overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{task.title}</div>
         <div style={{ display: "flex", gap: 7, alignItems: "center", marginTop: 3 }}>
-          <PixelIcon name={task.type === "daily" ? "repeat" : "target"} size={10} color="var(--ink-3)" />
+          <window.PixelIcon name={task.type === "daily" ? "repeat" : "target"} size={10} color="var(--ink-3)" />
           <span style={{ width: 7, height: 7, borderRadius: 2, background: window.CATS[task.cat].color, display: "inline-block" }} />
           <span style={{ fontSize: 12, color: c.over ? "var(--heat-4)" : "var(--ink-3)", whiteSpace: "nowrap" }}>{c.label}</span>
         </div>
@@ -95,7 +96,7 @@ function TaskRow({ task, onToggle, onOpen, compact }) {
 function SectionLabel({ icon, children, right }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "0 0 2px", padding: "0 2px" }}>
-      {icon && <PixelIcon name={icon} size={13} color="var(--ink-3)" />}
+      {icon && <window.PixelIcon name={icon} size={13} color="var(--ink-3)" />}
       <span className="eyebrow">{children}</span>
       <div style={{ flex: 1, height: 2, background: "var(--line)", marginLeft: 4 }} />
       {right}
@@ -121,14 +122,14 @@ function TabBar({ active, onChange, onAdd }) {
       <div key="add" style={{ display: "grid", placeItems: "center" }}>
           <button className="px-btn" onClick={onAdd} aria-label="Add task"
         style={{ width: 56, height: 56, padding: 0, borderRadius: 16, transform: "translateY(-12px)" }}>
-            <PixelIcon name="plus" size={22} color="var(--on-accent)" />
+            <window.PixelIcon name="plus" size={22} color="var(--on-accent)" />
           </button>
         </div> :
 
       <button key={it.id} onClick={() => onChange(it.id)}
       style={{ background: "none", border: "none", cursor: "pointer", display: "grid", justifyItems: "center",
         gap: 4, padding: "2px 0" }}>
-          <PixelIcon name={it.icon} size={21} color={active === it.id ? "var(--accent)" : "var(--ink-3)"}
+          <window.PixelIcon name={it.icon} size={21} color={active === it.id ? "var(--accent)" : "var(--ink-3)"}
         className={active === it.id && it.id === "deadlines" ? "is-ember" : ""} />
           <span className="px" style={{ fontSize: 10, letterSpacing: ".02em",
           color: active === it.id ? "var(--accent)" : "var(--ink-3)" }}>{it.label}</span>
@@ -156,7 +157,7 @@ function TopChrome({ tab, onChange, onAdd, heat }) {
         </div>
         <button onClick={onAdd} className="px-btn" aria-label="Add task"
         style={{ width: 40, height: 40, padding: 0, borderRadius: 11 }}>
-          <PixelIcon name="plus" size={16} color="var(--on-accent)" />
+          <window.PixelIcon name="plus" size={16} color="var(--on-accent)" />
         </button>
       </div>
       <div style={{ display: "flex", gap: 3, background: "var(--sunken)", border: "2px solid var(--line)",
@@ -172,7 +173,7 @@ function TopChrome({ tab, onChange, onAdd, heat }) {
               fontFamily: "var(--font-pixel)", letterSpacing: "var(--pixel-tracking)",
               fontSize: 13, color: on ? "var(--accent)" : "var(--ink-3)",
               transition: "background .12s, color .12s, transform .09s ease" }}>
-              <PixelIcon name={it.icon} size={11} color={on ? "var(--accent)" : "var(--ink-3)"} />
+              <window.PixelIcon name={it.icon} size={11} color={on ? "var(--accent)" : "var(--ink-3)"} />
               {it.label}
             </button>);
 
@@ -224,7 +225,7 @@ function PxSegment({ value, options, onChange, full }) {
             background: on ? "var(--surface)" : "transparent",
             boxShadow: on ? "0 2px 0 var(--shadow)" : "none",
             color: on ? "var(--accent)" : "var(--ink-3)" }}>
-            {o.icon && <PixelIcon name={o.icon} size={12} color={on ? "var(--accent)" : "var(--ink-3)"} />}
+            {o.icon && <window.PixelIcon name={o.icon} size={12} color={on ? "var(--accent)" : "var(--ink-3)"} />}
             {o.label}
           </button>);
 

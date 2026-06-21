@@ -1,3 +1,4 @@
+import React from "react";
 // calendar.jsx — Plan: month calendar + per-day detail with duration-based load
 const { useState: useStateCal, useMemo: useMemoCal } = React;
 const DOW = ["M", "T", "W", "T", "F", "S", "S"];
@@ -78,7 +79,7 @@ function PlanRow({ task, onOpen, onMove }) {
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontWeight: 700, fontSize: 14.5, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{task.title}</div>
         <div style={{ display: "flex", gap: 7, alignItems: "center", marginTop: 3 }}>
-          <PixelIcon name="clock" size={10} color="var(--ink-3)" />
+          <window.PixelIcon name="clock" size={10} color="var(--ink-3)" />
           <span style={{ fontSize: 12, color: "var(--ink-3)" }}>{window.fmtDur(task.dur)}</span>
           <span style={{ width: 7, height: 7, borderRadius: 2, background: window.CATS[task.cat].color }} />
         </div>
@@ -87,10 +88,10 @@ function PlanRow({ task, onOpen, onMove }) {
         <div onClick={e => e.stopPropagation()} style={{ display: "flex", gap: 4 }}>
           <button onClick={() => onMove(task.id, window.addDays(task.planDate || window.TODAY, -1))}
             className="px-btn ghost" style={{ padding: "5px 7px", boxShadow: "none" }}>
-            <PixelIcon name="chevL" size={11} color="var(--ink)" /></button>
+            <window.PixelIcon name="chevL" size={11} color="var(--ink)" /></button>
           <button onClick={() => onMove(task.id, window.addDays(task.planDate || window.TODAY, 1))}
             className="px-btn ghost" style={{ padding: "5px 7px", boxShadow: "none" }}>
-            <PixelIcon name="chevR" size={11} color="var(--ink)" /></button>
+            <window.PixelIcon name="chevR" size={11} color="var(--ink)" /></button>
         </div>
       )}
     </div>
@@ -129,10 +130,10 @@ function CalendarScreen({ tasks, onOpen, onMovePlan, dailyCap }) {
       {/* month nav */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
         <button onClick={() => stepMonth(-1)} className="px-btn ghost" style={{ padding: "6px 10px" }}>
-          <PixelIcon name="chevL" size={12} color="var(--ink)" /></button>
+          <window.PixelIcon name="chevL" size={12} color="var(--ink)" /></button>
         <span className="px" style={{ fontSize: 16, color: "var(--ink)" }}>{monthName}</span>
         <button onClick={() => stepMonth(1)} className="px-btn ghost" style={{ padding: "6px 10px" }}>
-          <PixelIcon name="chevR" size={12} color="var(--ink)" /></button>
+          <window.PixelIcon name="chevR" size={12} color="var(--ink)" /></button>
       </div>
 
       <MonthGrid year={view.year} month={view.month} tasks={tasks}
@@ -142,7 +143,7 @@ function CalendarScreen({ tasks, onOpen, onMovePlan, dailyCap }) {
       {heavy.m > cap && light.date && !window.sameDay(heavy.date, light.date) && (
         <div className="px-card flat" style={{ padding: "10px 12px", margin: "12px 0 4px", display: "flex", gap: 10, alignItems: "center",
           borderLeft: "6px solid var(--heat-3)" }}>
-          <PixelIcon name="bolt" size={16} color="var(--heat-3)" />
+          <window.PixelIcon name="bolt" size={16} color="var(--heat-3)" />
           <div style={{ flex: 1, fontSize: 12.5, color: "var(--ink-2)", lineHeight: 1.35 }}>
             <b style={{ color: "var(--ink)" }}>{window.planLabel(heavy.date)}</b> is over by {window.fmtDur(heavy.m - cap)}.
             Move a task to {window.planLabel(light.date)} to balance.
@@ -192,13 +193,13 @@ function CalendarScreen({ tasks, onOpen, onMovePlan, dailyCap }) {
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontWeight: 700, fontSize: 14.5 }}>{t.title}</div>
                   <div style={{ display: "flex", gap: 7, alignItems: "center", marginTop: 3 }}>
-                    <PixelIcon name="clock" size={10} color="var(--ink-3)" />
+                    <window.PixelIcon name="clock" size={10} color="var(--ink-3)" />
                     <span style={{ fontSize: 12, color: "var(--ink-3)" }}>{window.fmtDur(t.dur)}</span>
                   </div>
                 </div>
                 <button onClick={e => { e.stopPropagation(); onMovePlan(t.id, selected); }} className="px-btn"
                   style={{ padding: "7px 11px", fontSize: 12 }}>
-                  <PixelIcon name="plus" size={11} color="var(--on-accent)" /> {window.planLabel(selected)}</button>
+                  <window.PixelIcon name="plus" size={11} color="var(--on-accent)" /> {window.planLabel(selected)}</button>
               </div>
             ))}
           </div>

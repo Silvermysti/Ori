@@ -1,3 +1,5 @@
+import React from "react";
+import * as ReactDOM from "react-dom/client";
 // app.jsx — Ori shell: navigation, state, tweaks
 const { useState: useApp, useEffect: useAppEffect } = React;
 

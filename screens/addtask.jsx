@@ -1,3 +1,4 @@
+import React from "react";
 // addtask.jsx — quick-add bottom sheet
 const { useState: useStateAdd } = React;
 const ADD_QUICK = [
@@ -63,7 +64,7 @@ function AddSheet({ open, onClose, onAdd }) {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
           <span className="px" style={{ fontSize: 20, color: "var(--ink)", whiteSpace: "nowrap" }}>New task</span>
           <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", padding: 6 }}>
-            <PixelIcon name="x" size={16} color="var(--ink-3)" /></button>
+            <window.PixelIcon name="x" size={16} color="var(--ink-3)" /></button>
         </div>
 
         <input autoFocus value={f.title} onChange={e => set({ title: e.target.value })}
@@ -177,7 +178,7 @@ function AddSheet({ open, onClose, onAdd }) {
 
         <button className="px-btn" onClick={submit} disabled={!f.title.trim()}
           style={{ width: "100%", marginTop: 14, opacity: f.title.trim() ? 1 : .5 }}>
-          <PixelIcon name="plus" size={14} color="var(--on-accent)" /> Add task
+          <window.PixelIcon name="plus" size={14} color="var(--on-accent)" /> Add task
         </button>
       </div>
     </window.Sheet>

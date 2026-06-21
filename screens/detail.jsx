@@ -1,3 +1,4 @@
+import React from "react";
 // detail.jsx — full-screen task detail / editor + shared form controls
 const { useState: useStateDet } = React;
 
@@ -81,7 +82,7 @@ function HeatPreview({ task }) {
     <div className="px-inset" style={{ padding: 14, display: "flex", gap: 13, alignItems: "center",
       borderColor: `var(--heat-${k})`, background: `var(--heat-${k}-bg)` }}>
       <div style={{ display: "grid", placeItems: "center", gap: 6 }}>
-        <PixelIcon name="flame" size={26} color={`var(--heat-${k})`} className={k === 4 ? "is-ember" : ""} />
+        <window.PixelIcon name="flame" size={26} color={`var(--heat-${k})`} className={k === 4 ? "is-ember" : ""} />
         <window.Meter level={k} h={5} />
       </div>
       <div style={{ flex: 1 }}>
@@ -113,10 +114,10 @@ function TaskDetail({ task, onClose, onSave, onDelete, onToggle }) {
       {/* top bar */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
         <button onClick={onClose} className="px-btn ghost" style={{ padding: "9px 12px" }}>
-          <PixelIcon name="chevL" size={13} color="var(--ink)" /> Back</button>
+          <window.PixelIcon name="chevL" size={13} color="var(--ink)" /> Back</button>
         <button onClick={() => { onDelete(t.id); onClose(); }}
           style={{ background: "none", border: "none", cursor: "pointer", padding: 8 }}>
-          <PixelIcon name="trash" size={20} color="var(--ink-3)" /></button>
+          <window.PixelIcon name="trash" size={20} color="var(--ink-3)" /></button>
       </div>
 
       {/* title */}
@@ -239,7 +240,7 @@ function TaskDetail({ task, onClose, onSave, onDelete, onToggle }) {
 
         <div style={{ display: "flex", gap: 12 }}>
           <button className="px-btn ghost" style={{ flex: 1 }} onClick={() => { onToggle(t.id); onClose(); }}>
-            <PixelIcon name="check" size={14} color="var(--ink)" /> {t.done ? "Reopen" : "Done"}</button>
+            <window.PixelIcon name="check" size={14} color="var(--ink)" /> {t.done ? "Reopen" : "Done"}</button>
           <button className="px-btn" style={{ flex: 1.4 }} onClick={() => { onSave(t); onClose(); }}>Save</button>
         </div>
       </div>

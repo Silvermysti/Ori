@@ -1,3 +1,4 @@
+import React from "react";
 // pixel-icons.jsx — icons drawn as grids of square cells (on-theme, no freehand SVG)
 // Exports: PixelIcon, PX_ICONS  (to window)
 const PX_ICONS = {
