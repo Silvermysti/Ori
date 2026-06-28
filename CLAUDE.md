@@ -11,9 +11,9 @@ that maps to a warm-earthy color. It is a design/prototype artifact, not a produ
 ## Build — Vite (as of Phase 1 of the Android conversion)
 
 This project is being converted into an installable Android app (Vite build → Capacitor
-package → Android Studio). **Phase 1 is done:** the old in-browser Babel setup (`Ori.html` +
-`@babel/standalone` from a CDN) has been replaced by a real **Vite** build. `Ori.html` is now
-legacy and superseded; the live entry point is `index.html` + `main.jsx`.
+package → Android Studio). **Phase 1 is done:** the old in-browser Babel setup (the legacy
+`Ori.html` + `@babel/standalone` from a CDN) has been replaced by a real **Vite** build. The
+live entry point is `index.html` + `main.jsx`.
 
 ```bash
 npm install        # once, to get dependencies into node_modules/
@@ -75,23 +75,23 @@ Two checks are used in this repo instead of a test suite:
   - `once` — has a `deadline`; heat is derived from hours remaining. May have a `planDate`
     (scheduled day) or none ("Anytime").
 - **`app.jsx`** — the shell: holds `tasks` state and all mutations (toggle/save/del/add/movePlan),
-  switches between the four screens by `tab`, and renders the detail push + add sheet. Wraps
-  everything in `IOSDevice` (bezel) and a `.ori-root` themed container. Persists `tasks` to
+  switches between the four screens by `tab`, and renders the detail push + add sheet. Renders
+  a full-screen `.ori-stage` → `.ori-root` themed container (no device bezel as of Phase 3).
+  Persists `tasks` to
   `localStorage` (key `ori.tasks`) on every change and loads them on start (with `reviveDates`
   turning stored date strings back into `Date`s; falls back to `SEED` on first run). Runs
   `useNow()` to keep the clock live.
 - **`components/ui.jsx`** — shared widgets (`TaskRow`, `Check`, `HeatTag`, `Countdown`,
-  `TabBar`, `TopChrome`, `Sheet`, etc.).
+  `TopChrome`, `Sheet`, etc.).
 - **`components/pixel-icons.jsx`** — icons are ASCII grids of `#`/`.` cells rendered as squares
   (`PixelIcon name=...`), not SVG paths. Add new icons to the `PX_ICONS` map.
 - **`screens/`** — `today`, `calendar` (month grid + per-day load vs. `DAILY_CAP`), `deadlines`
   (one-time tasks bucketed by due date), `detail` (editor), `addtask` (quick-add sheet), `you`.
-- **`frames/`** — `ios-frame.jsx` (the iOS device chrome) and `tweaks-panel.jsx` (the live
-  theme/layout controls). These are vendored "omelette starter" scaffolds marked
-  `@ds-adherence-ignore`; treat them as third-party and avoid rewriting them. **`ios-frame.jsx`
-  is no longer used (Phase 3 removed the device bezel)** — the app now fills the real screen via
-  `.ori-stage` in `styles/ori.css` (full-bleed on a phone; capped to a 480px centered column on
-  desktop). The file is kept but unimported.
+- **`frames/`** — `tweaks-panel.jsx` (the live theme/layout controls). A vendored "omelette
+  starter" scaffold marked `@ds-adherence-ignore`; treat it as third-party and avoid rewriting
+  it. (The old `ios-frame.jsx` device bezel was deleted in Phase 3 — the app now fills the real
+  screen via `.ori-stage` in `styles/ori.css`: full-bleed on a phone; capped to a 480px centered
+  column on desktop.)
 
 ## Theming
 

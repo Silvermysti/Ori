@@ -22,11 +22,6 @@ function HeatTag({ k, ember }) {
 
 }
 
-function HeatDot({ k, size = 11 }) {
-  return <span style={{ width: size, height: size, borderRadius: 3, background: `var(--heat-${k})`,
-    display: "inline-block", flexShrink: 0 }} className={k === 4 ? "is-ember" : ""} />;
-}
-
 function CatDot({ cat }) {
   const c = window.CATS[cat];
   return <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 12, color: "var(--ink-3)" }}>
@@ -100,41 +95,6 @@ function SectionLabel({ icon, children, right }) {
       <span className="eyebrow">{children}</span>
       <div style={{ flex: 1, height: 2, background: "var(--line)", marginLeft: 4 }} />
       {right}
-    </div>);
-
-}
-
-// bottom tab bar — center raised Add
-function TabBar({ active, onChange, onAdd }) {
-  const items = [
-  { id: "today", icon: "list", label: "Today" },
-  { id: "calendar", icon: "calendar", label: "Plan" },
-  { id: "add" },
-  { id: "deadlines", icon: "flame", label: "Due" },
-  { id: "you", icon: "user", label: "You" }];
-
-  return (
-    <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 40,
-      paddingBottom: 26, paddingTop: 10, background: "var(--surface)",
-      borderTop: "2px solid var(--line-2)",
-      display: "grid", gridTemplateColumns: "repeat(5,1fr)", alignItems: "end" }}>
-      {items.map((it) => it.id === "add" ?
-      <div key="add" style={{ display: "grid", placeItems: "center" }}>
-          <button className="px-btn" onClick={onAdd} aria-label="Add task"
-        style={{ width: 56, height: 56, padding: 0, borderRadius: 16, transform: "translateY(-12px)" }}>
-            <window.PixelIcon name="plus" size={22} color="var(--on-accent)" />
-          </button>
-        </div> :
-
-      <button key={it.id} onClick={() => onChange(it.id)}
-      style={{ background: "none", border: "none", cursor: "pointer", display: "grid", justifyItems: "center",
-        gap: 4, padding: "2px 0" }}>
-          <window.PixelIcon name={it.icon} size={21} color={active === it.id ? "var(--accent)" : "var(--ink-3)"}
-        className={active === it.id && it.id === "deadlines" ? "is-ember" : ""} />
-          <span className="px" style={{ fontSize: 10, letterSpacing: ".02em",
-          color: active === it.id ? "var(--accent)" : "var(--ink-3)" }}>{it.label}</span>
-        </button>
-      )}
     </div>);
 
 }
@@ -234,4 +194,4 @@ function PxSegment({ value, options, onChange, full }) {
 
 }
 
-Object.assign(window, { Meter, HeatTag, HeatDot, CatDot, Check, Countdown, TaskRow, SectionLabel, TabBar, TopChrome, Sheet, PxSegment });
+Object.assign(window, { Meter, HeatTag, CatDot, Check, Countdown, TaskRow, SectionLabel, TopChrome, Sheet, PxSegment });
