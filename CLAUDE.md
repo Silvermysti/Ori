@@ -88,7 +88,10 @@ Two checks are used in this repo instead of a test suite:
   (one-time tasks bucketed by due date), `detail` (editor), `addtask` (quick-add sheet), `you`.
 - **`frames/`** — `ios-frame.jsx` (the iOS device chrome) and `tweaks-panel.jsx` (the live
   theme/layout controls). These are vendored "omelette starter" scaffolds marked
-  `@ds-adherence-ignore`; treat them as third-party and avoid rewriting them.
+  `@ds-adherence-ignore`; treat them as third-party and avoid rewriting them. **`ios-frame.jsx`
+  is no longer used (Phase 3 removed the device bezel)** — the app now fills the real screen via
+  `.ori-stage` in `styles/ori.css` (full-bleed on a phone; capped to a 480px centered column on
+  desktop). The file is kept but unimported.
 
 ## Theming
 
