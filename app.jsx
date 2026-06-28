@@ -41,20 +41,6 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "todayLayout": "heat"
 } /*EDITMODE-END*/;
 
-function Stage({ children }) {
-  const [scale, setScale] = useApp(1);
-  useAppEffect(() => {
-    const fit = () => setScale(Math.min(1, (window.innerHeight - 32) / 874, (window.innerWidth - 24) / 402));
-    fit();window.addEventListener("resize", fit);
-    return () => window.removeEventListener("resize", fit);
-  }, []);
-  return (
-    <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", overflow: "hidden", textAlign: "left" }}>
-      <div style={{ transform: `scale(${scale})`, transformOrigin: "center" }}>{children}</div>
-    </div>);
-
-}
-
 function App() {
   const [t, setTweak] = window.useTweaks(TWEAK_DEFAULTS);
   const [tasks, setTasks] = useApp(loadTasks);
@@ -89,29 +75,27 @@ function App() {
 
   return (
     <React.Fragment>
-      <Stage>
-        <window.IOSDevice dark={t.dark}>
-          <div className="ori-root" data-theme={t.dark ? "dark" : "light"} data-density={t.density} data-font={t.font}
-          style={{ ...rootStyle, position: "relative", overflow: "hidden", display: "flex", flexDirection: "column" }}>
-            <window.TopChrome tab={tab} onChange={setTab} onAdd={() => setAddOpen(true)} heat={topHeat} />
-            <div style={{ flex: 1, overflow: "hidden", position: "relative" }}>
-              <div key={tab} className="screen-enter" style={{ height: "100%" }}>
-                {screen}
-              </div>
+      <div className="ori-stage">
+        <div className="ori-root" data-theme={t.dark ? "dark" : "light"} data-density={t.density} data-font={t.font}
+        style={{ ...rootStyle, position: "relative", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+          <window.TopChrome tab={tab} onChange={setTab} onAdd={() => setAddOpen(true)} heat={topHeat} />
+          <div style={{ flex: 1, overflow: "hidden", position: "relative" }}>
+            <div key={tab} className="screen-enter" style={{ height: "100%" }}>
+              {screen}
             </div>
-
-            {/* detail push */}
-            {detailTask &&
-            <div className="screen-push" style={{ position: "absolute", inset: 0, zIndex: 70 }}>
-                <window.TaskDetail task={detailTask} onClose={() => setDetailId(null)}
-              onSave={save} onDelete={del} onToggle={toggle} />
-              </div>
-            }
-
-            <window.AddSheet open={addOpen} onClose={() => setAddOpen(false)} onAdd={add} />
           </div>
-        </window.IOSDevice>
-      </Stage>
+
+          {/* detail push */}
+          {detailTask &&
+          <div className="screen-push" style={{ position: "absolute", inset: 0, zIndex: 70 }}>
+              <window.TaskDetail task={detailTask} onClose={() => setDetailId(null)}
+            onSave={save} onDelete={del} onToggle={toggle} />
+            </div>
+          }
+
+          <window.AddSheet open={addOpen} onClose={() => setAddOpen(false)} onAdd={add} />
+        </div>
+      </div>
 
       <window.TweaksPanel>
         <window.TweakSection label="Theme" />

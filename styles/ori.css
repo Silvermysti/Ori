@@ -118,6 +118,20 @@
 }
 .ori-root ::selection { background: var(--heat-2-bg); }
 
+/* ---------- App stage: fill the screen (Phase 3 — replaces the iOS device frame).
+   On a phone the app is full-bleed; on a wide desktop it stays a phone-width column
+   so it doesn't stretch awkwardly. 100dvh tracks the mobile browser's chrome. ---------- */
+.ori-stage {
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  justify-content: center;
+}
+.ori-stage > .ori-root {
+  width: 100%;
+  max-width: 480px;
+}
+
 .px { font-family: var(--font-pixel); letter-spacing: var(--pixel-tracking); }
 
 /* hide scrollbars but keep scroll */
