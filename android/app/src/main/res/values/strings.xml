@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Ori</string>
+    <string name="title_activity_main">Ori</string>
+    <string name="package_name">com.silvermysti.ori</string>
+    <string name="custom_url_scheme">com.silvermysti.ori</string>
+</resources>
